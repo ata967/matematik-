@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7. Sınıf Matematik - Yüzdeler Sınavı</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .question h3 {
+            margin-top: 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #timer {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+            color: #ff0000;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e8;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>7. Sınıf Matematik - Yüzdeler Sınavı</h1>
+        
+        <div id="timer">Süre: 00:00</div>
+        
+        <form id="quizForm">
+            <div class="question">
+                <h3>1. 100 TL'nin %20'si kaç TL'dir?</h3>
+                <input type="text" id="q1" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <div class="question">
+                <h3>2. Bir ürünün fiyatı 200 TL'dir. %10 indirim uygulandığında yeni fiyat ne olur?</h3>
+                <input type="text" id="q2" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <div class="question">
+                <h3>3. 50 TL'nin %25'i kaç TL'dir?</h3>
+                <input type="text" id="q3" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <div class="question">
+                <h3>4. Bir öğrencinin notu 80'dir. Bu not %15 arttığında yeni not ne olur?</h3>
+                <input type="text" id="q4" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <div class="question">
+                <h3>5. 300 TL'lik bir kitabın %20'si indirimli fiyatı kaç TL'dir?</h3>
+                <input type="text" id="q5" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <div class="question">
+                <h3>6. Bir sınıfta 40 öğrenci vardır. Bunların %30'u kızdır. Kaç kız öğrenci vardır?</h3>
+                <input type="text" id="q6" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <div class="question">
+                <h3>7. 150 TL'nin %40'ı kaç TL'dir?</h3>
+                <input type="text" id="q7" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <div class="question">
+                <h3>8. Bir ürünün fiyatı 500 TL'dir. %5 zam uygulandığında yeni fiyat ne olur?</h3>
+                <input type="text" id="q8" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <div class="question">
+                <h3>9. 75 TL'nin %20'si indirimli fiyatı kaç TL'dir?</h3>
+                <input type="text" id="q9" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <div class="question">
+                <h3>10. Bir mağazada 200 kitap vardır. Bunların %25'i satıldı. Kaç kitap kaldı?</h3>
+                <input type="text" id="q10" placeholder="Cevabınızı yazın">
+            </div>
+            
+            <button type="button" id="submitBtn">Sınavı Bitir</button>
+        </form>
+        
+        <div id="results" class="hidden">
+            <h2>Sonuçlarınız</h2>
+            <p id="score"></p>
+            <p id="timeTaken"></p>
+        </div>
+        
+        <h2>Önceki Sonuçlar</h2>
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>Tarih</th>
+                    <th>Puan</th>
+                    <th>Süre</th>
+                </tr>
+            </thead>
+            <tbody id="resultsBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeElapsed / 60);
+            const seconds = timeElapsed % 60;
+            document.getElementById('timer').textContent = `Süre: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        // Doğru cevaplar
+        const answers = {
+            q1: '20',
+            q2: '180',
+            q3: '12.5',
+            q4: '92',
+            q5: '60',
+            q6: '12',
+            q7: '60',
+            q8: '525',
+            q9: '15',
+            q10: '150'
+        };
+
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            stopTimer();
+            
+            let score = 0;
+            const totalQuestions = Object.keys(answers).length;
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const userAnswer = document.getElementById(`q${i}`).value.trim();
+                if (userAnswer === answers[`q${i}`]) {
+                    score++;
+                }
+            }
+            
+            const minutes = Math.floor(timeElapsed / 60);
+            const seconds = timeElapsed % 60;
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.getElementById('score').textContent = `Puanınız: ${score}/${totalQuestions}`;
+            document.getElementById('timeTaken').textContent = `Geçen Süre: ${timeString}`;
+            document.getElementById('results').classList.remove('hidden');
+            
+            // Sonucu tabloya ekle
+            saveResult(score, totalQuestions, timeString);
+            
+            // Formu devre dışı bırak
+            document.getElementById('quizForm').querySelectorAll('input').forEach(input => input.disabled = true);
+            this.disabled = true;
+        });
+
+        function saveResult(score, total, time) {
+            const results = JSON.parse(localStorage.getItem('quizResults') || '[]');
+            const now = new Date();
+            const dateString = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+            
+            results.push({
+                date: dateString,
+                score: `${score}/${total}`,
+                time: time
+            });
+            
+            localStorage.setItem('quizResults', JSON.stringify(results));
+            displayResults();
+        }
+
+        function displayResults() {
+            const results = JSON.parse(localStorage.getItem('quizResults') || '[]');
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+            
+            results.forEach(result => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = result.date;
+                row.insertCell(1).textContent = result.score;
+                row.insertCell(2).textContent = result.time;
+            });
+        }
+
+        // Sayfa yüklendiğinde timer başlat ve önceki sonuçları göster
+        window.addEventListener('load', function() {
+            startTimer();
+            displayResults();
+        });
+    </script>
+</body>
+</html>
